@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -23,9 +23,10 @@ model Ticket {
   id          String   @id @default(cuid())
   title       String
   description String
-  status      String   @default("OPEN") // OPEN, IN_PROGRESS, CLOSED
+  category    String   @default("General")
+  status      String   @default("OPEN") 
   priority    String   @default("LOW")
-  aiSummary   String?  // AI generated summary
+  aiSummary   String?  
   createdAt   DateTime @default(now())
   userId      String
   user        User     @relation(fields: [userId], references: [id])
