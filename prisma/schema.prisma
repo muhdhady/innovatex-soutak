@@ -10,13 +10,13 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  role      String   // "resident" or "employee"
-  tickets   Ticket[]
-  posts     ForumPost[]
-  points    Int      @default(0) // Gamification
+  id       String      @id @default(cuid())
+  email    String      @unique
+  name     String?
+  role     String      // "resident" or "employee"
+  tickets  Ticket[]
+  posts    ForumPost[] 
+  points   Int         @default(0) 
 }
 
 model Ticket {
@@ -26,17 +26,35 @@ model Ticket {
   category    String   @default("General")
   status      String   @default("OPEN") 
   priority    String   @default("LOW")
+  aiAccuracy  Boolean  @default(true)
   aiSummary   String?  
+  reportCount Int      @default(1)
   createdAt   DateTime @default(now())
   userId      String
   user        User     @relation(fields: [userId], references: [id])
 }
 
 model ForumPost {
-  id        String   @id @default(cuid())
-  question  String
-  aiAnswer  String?  // The "Google-like" AI answer
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
+  id          String       @id @default(cuid())
+  title       String
+  content     String
+  category    String
+  createdAt   DateTime     @default(now())
+  authorName  String
+  likes       Int          @default(0)
+  replies     ForumReply[]
+
+  // --- ADDED THIS TO FIX THE ERROR ---
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+}
+
+model ForumReply {
+  id          String    @id @default(cuid())
+  content     String
+  createdAt   DateTime  @default(now())
+  authorName  String
+  isAi        Boolean   @default(false)
+  postId      String
+  post        ForumPost @relation(fields: [postId], references: [id])
 }
